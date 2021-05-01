@@ -5,14 +5,15 @@ using UnityEngine;
 
 public class TurretBehavior : MonoBehaviour
 {
+	[SerializeField] Blueprint blueprint;
 	[SerializeField] Transform turretPost;
 	[SerializeField] Transform turretGun;
 	[SerializeField] ParticleSystem particles;
 	public float RotationSpeed = 20;
 
 	//values for internal use
-	private Quaternion _lookRotation;
-	private Vector3 _direction;
+	private Quaternion _lookRotation = Quaternion.identity;
+	private Vector3 _direction = Vector3.zero;
 
 	Transform target;
 	List<Health> enemies = new List<Health>();
@@ -36,11 +37,14 @@ public class TurretBehavior : MonoBehaviour
 	}
 	private void Update()
 	{
-		var emission = particles.emission;
-		if (emission.enabled != armed) emission.enabled = armed;
+		if (blueprint.IsPlaced)
+		{
+			var emission = particles.emission;
+			if (emission.enabled != armed) emission.enabled = armed;
 
-		armed = HasTarget();
-		if (armed) TrackTarget();
+			armed = HasTarget();
+			if (armed) TrackTarget();
+		}
 	}
 
 	private bool HasTarget()

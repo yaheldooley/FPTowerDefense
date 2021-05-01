@@ -6,28 +6,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	[Header("Player Behaviors")]
-    [SerializeField] PlayerMovement movement;
-    [SerializeField] Build build;
+	[SerializeField] PlayerMovement movement;
 
 	[Header("UI")]
 	[SerializeField] GameObject buildPanel;
 
-	Controls controls;
+	[Header("Camera")]
+	[SerializeField] GameObject playerCamera;
+
+
 	bool fullScreen = false;
 	bool buildMode = false;
 
+	Controls controls;
 	private void Awake()
 	{
 		controls = new Controls();
 		controls.Player.ToggleBuild.started += ctx => ToggleBuild();
-	}
-
-	private void ToggleBuild()
-	{
-		buildMode = !buildMode;
-		buildPanel.SetActive(buildMode);
-		build.enabled = buildMode;
-		movement.enabled = !buildMode;
+		ToggleFullscreen();
 	}
 
 	private void OnEnable()
@@ -39,9 +35,11 @@ public class PlayerController : MonoBehaviour
 		controls.Disable();
 	}
 
-	void Start()
+	private void ToggleBuild()
 	{
-		ToggleFullscreen();
+		buildMode = !buildMode;
+		buildPanel.SetActive(buildMode);
+		movement.enabled = !buildMode;
 	}
 
 	void Update()

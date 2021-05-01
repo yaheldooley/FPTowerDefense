@@ -8,12 +8,15 @@ public class GameStats : MonoBehaviour
 {
 	[SerializeField] TextMeshProUGUI goldText;
     [SerializeField] int startingGold = 600;
-    private int currentGold = 0;
+    public int currentGold = 0;
+
+	[SerializeField] Transform blueprintsRoot;
 
 	private void Start()
 	{
 		currentGold = startingGold;
 		UpdateGoldText();
+		GiveRefToBlueprints();
 	}
 
 	public void AddGold(int amount)
@@ -32,8 +35,17 @@ public class GameStats : MonoBehaviour
 		else return false;
 	}
 
-	private void UpdateGoldText()
+	public void UpdateGoldText()
 	{
 		goldText.text = $"Purse: {currentGold}g";
+	}
+
+	private void GiveRefToBlueprints()
+	{
+		UpgradeBlueprint[] blueprints = blueprintsRoot.GetComponentsInChildren<UpgradeBlueprint>();
+		foreach(UpgradeBlueprint blue in blueprints)
+		{
+			blue.GiveGameStatsReference(this);
+		}
 	}
 }

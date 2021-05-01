@@ -16,7 +16,7 @@ public class TurretBehavior : MonoBehaviour
 	private Vector3 _direction = Vector3.zero;
 
 	Transform target;
-	List<Health> enemies = new List<Health>();
+	List<EnemyHealth> enemies = new List<EnemyHealth>();
 
 	bool armed = false;
 
@@ -24,7 +24,7 @@ public class TurretBehavior : MonoBehaviour
 	{
 		if (other.CompareTag("Enemy"))
 		{
-			enemies.Add(other.gameObject.GetComponent<Health>());
+			enemies.Add(other.gameObject.GetComponent<EnemyHealth>());
 		}
 	}
 
@@ -32,7 +32,7 @@ public class TurretBehavior : MonoBehaviour
 	{
 		if (other.CompareTag("Enemy"))
 		{
-			enemies.Remove(other.gameObject.GetComponent<Health>());	
+			enemies.Remove(other.gameObject.GetComponent<EnemyHealth>());	
 		}
 	}
 	private void Update()
@@ -61,9 +61,9 @@ public class TurretBehavior : MonoBehaviour
 	}
 	private void ConfirmTargetsValid()
 	{
-		List<Health> validTargets = new List<Health>(enemies);
+		List<EnemyHealth> validTargets = new List<EnemyHealth>(enemies);
 
-		foreach (Health enemy in enemies)
+		foreach (EnemyHealth enemy in enemies)
 		{
 			if (enemy == null) validTargets.Remove(enemy);
 		}

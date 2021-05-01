@@ -22,7 +22,7 @@ public class WaveOrder : MonoBehaviour
 			{
 				GameObject newEnemy = Instantiate(spawnGroups[0].enemyPrefab);
 				newEnemy.transform.position = transform.position;
-				newEnemy.GetComponent<Health>().isEnemy = true;
+				newEnemy.GetComponent<EnemyHealth>().isEnemy = true;
 				newEnemy.GetComponent<EnemyMovement>().EnableNavMesh(target.position);
 			}
 			spawnGroups.RemoveAt(0);

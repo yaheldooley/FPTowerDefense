@@ -5,8 +5,14 @@ using UnityEngine;
 public class AllWavesList : MonoBehaviour
 {
     WaveOrder[] waveOrders;
+    WaveManager waveManager;
 
-    public void InitializeAllWavesOrdersLists()
+	private void Awake()
+	{
+        waveManager = FindObjectOfType<WaveManager>();
+	}
+
+	public void InitializeAllWavesOrdersLists()
     {
         waveOrders = GetComponentsInChildren<WaveOrder>();
     }

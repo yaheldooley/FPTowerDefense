@@ -2,15 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Health : MonoBehaviour
+public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] int HP = 5;
     [SerializeField] int maxHP = 5;
     public bool isAlive = true;
     public bool isEnemy = false;
 
-    public void Damage(int damage)
+	private void OnEnable()
+	{
+		EnemyTracker.currentEnemies++;
+	}
+	public void Damage(int damage)
     {
         if (!isAlive) return;
         HP = HP - damage;
@@ -20,7 +25,8 @@ public class Health : MonoBehaviour
 	private void Dead()
 	{
         isAlive = false;
-        
+		EnemyTracker.currentEnemies--;
+		print(EnemyTracker.currentEnemies);
         Destroy(gameObject);
 	}
 
@@ -28,5 +34,4 @@ public class Health : MonoBehaviour
 	{
         Damage(1);
 	}
-	
 }

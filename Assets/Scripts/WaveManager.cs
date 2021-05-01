@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WaveManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class WaveManager : MonoBehaviour
 	private int totalWaves;
 	private int currentWave = 0;
     private int secondsIntoWave = 0;
+	private int enemiesSpawned = 0;
 
 	private void Awake()
 	{
@@ -46,7 +48,7 @@ public class WaveManager : MonoBehaviour
 			yield return new WaitForSeconds(1);
 
 		}
-		secondsText.text = "All enemies spawned";
+		secondsText.text = "Level Complete!";
 		yield return null;
 	}
 	private void SpawnFromAllWavesList()
@@ -59,7 +61,7 @@ public class WaveManager : MonoBehaviour
 
 	private void CheckWaveStatus()
 	{
-		if (currentWave == lengthOfEachWave.Length) active = false;
+		if (currentWave == lengthOfEachWave.Length && EnemyTracker.currentEnemies == 0) active = false;
 
 		else if (secondsIntoWave == lengthOfEachWave[currentWave]) BeginNextWave();
 		
@@ -79,6 +81,16 @@ public class WaveManager : MonoBehaviour
 
 			//give players a short build period
 		}
+	}
+	public void AddEnemy()
+	{
+		enemiesSpawned++;
+		print(enemiesSpawned + " enemies in play");
+	}
+	public void RemoveEnemy()
+	{
+		enemiesSpawned--;
+		print(enemiesSpawned + " enemies in play");
 	}
 
 	private void LevelComplete()

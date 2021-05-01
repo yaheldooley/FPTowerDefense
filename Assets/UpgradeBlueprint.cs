@@ -13,8 +13,16 @@ public class UpgradeBlueprint : MonoBehaviour, ISelectHandler,IDeselectHandler
     GameStats stats;
     private GameObject currentBlueprintChosen;
     private Vector3 lastGroundPos = Vector3.zero;
-
     bool justBuilt = false;
+    void OnDisable()
+    {
+        if(currentBlueprintChosen != null)
+        {
+            Destroy(currentBlueprintChosen.gameObject);
+            currentBlueprintChosen = null;
+        }
+        
+    }
 
     public void BuildBaseBlueprint()
     {
@@ -60,6 +68,7 @@ public class UpgradeBlueprint : MonoBehaviour, ISelectHandler,IDeselectHandler
         justBuilt = false;
     }
 
+    
     private Vector3 GetBlueprintPos()
     {
         RaycastHit hit;

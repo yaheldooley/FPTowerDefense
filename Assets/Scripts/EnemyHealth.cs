@@ -1,3 +1,4 @@
+using FPTowerDefense.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] int maxHP = 5;
     public bool isAlive = true;
     public bool isEnemy = false;
+	[SerializeField] int reward;
 
 	private void OnEnable()
 	{
@@ -26,7 +28,7 @@ public class EnemyHealth : MonoBehaviour
 	{
         isAlive = false;
 		EnemyTracker.currentEnemies--;
-		print(EnemyTracker.currentEnemies);
+		GameObject.FindGameObjectWithTag("GameManager").GetComponent<Treasury>().AddGold(reward);
         Destroy(gameObject);
 	}
 

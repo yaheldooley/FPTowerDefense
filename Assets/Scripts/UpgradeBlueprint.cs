@@ -13,11 +13,18 @@ namespace FPTowerDefense.Build
         [SerializeField] Transform playersCam;
         [SerializeField] Transform blueprintRoot;
         Vector3 buildAngle = new Vector3(0, -.4f, 0);
-        Treasury stats;
         private GameObject currentBlueprintChosen;
         private Vector3 lastGroundPos = Vector3.zero;
         bool justBuilt = false;
-        void OnDisable()
+        Treasury treasury;
+
+		private void Awake()
+		{
+            if (treasury == null) treasury = FindObjectOfType<Treasury>();
+		}
+
+
+		void OnDisable()
         {
             if (currentBlueprintChosen != null)
             {
@@ -28,11 +35,10 @@ namespace FPTowerDefense.Build
 
         public void BuildBaseBlueprint()
         {
-            if (buildData[0].GetCost() <= stats.currentGold)
+            if (buildData[0].GetCost() <= LevelSettings.currentGold)
             {
                 justBuilt = true;
-                stats.currentGold -= buildData[0].GetCost();
-                stats.UpdateGoldText();
+                treasury.SpendGold(buildData[0].GetCost()); 
                 currentBlueprintChosen.gameObject.GetComponent<Blueprint>().IsPlaced = true;
                 currentBlueprintChosen = null;
             }
@@ -42,18 +48,11 @@ namespace FPTowerDefense.Build
         {
             if (currentLevel < buildData.Length - 1)
             {
-                if (buildData[currentLevel].GetCost() <= stats.currentGold)
+                if (buildData[currentLevel].GetCost() <= LevelSettings.currentGold)
                 {
-                    stats.currentGold -= buildData[0].GetCost();
-                    stats.UpdateGoldText();
+                    treasury.SpendGold(buildData[0].GetCost());
                 }
             }
-
-        }
-
-        public void GiveGameStatsReference(Treasury _stats)
-        {
-            stats = _stats;
         }
 
         public void OnSelect(BaseEventData eventData)

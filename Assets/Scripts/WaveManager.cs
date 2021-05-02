@@ -7,11 +7,12 @@ using UnityEngine.Events;
 
 public class WaveManager : MonoBehaviour
 {
-    bool active = true;
+    bool gameInProgress = true;
 
 	[Header("Wave Data")]
 	[SerializeField] int[] lengthOfEachWave;
     [SerializeField] Transform target;
+	[SerializeField] int breakBetweenWaves = 120;
 
 	[Header("UI")]
 	[SerializeField] TextMeshProUGUI secondsText;
@@ -19,10 +20,17 @@ public class WaveManager : MonoBehaviour
 
 	private AllWavesList[] allWavesLists;
 
+	private int secondsIntoBreak = 0;
+
 	private int totalWaves;
-	private int currentWave = 0;
+	private int currentWave = -1;
     private int secondsIntoWave = 0;
+
+
 	private int enemiesSpawned = 0;
+	private bool spawnsComplete = false;
+
+	private GameState gameState = GameState.Start;
 
 	private void Awake()
 	{
@@ -38,19 +46,74 @@ public class WaveManager : MonoBehaviour
 
 	private IEnumerator ProgressThroughWaves()
     {
-        while(active)
+        while(gameInProgress)
 		{
-			secondsText.text = $"Seconds: {secondsIntoWave}";
-			waveNumberText.text = $"WAVE: {currentWave}/{totalWaves}";
-			SpawnFromAllWavesList();
-			secondsIntoWave++;
-			CheckWaveStatus(); 
+			if (gameState == GameState.Start)	IncrementStart();
+			if (gameState == GameState.Wave)	IncrementWave();
+			if (gameState == GameState.Break)	IncrementBreak();
 			yield return new WaitForSeconds(1);
-
 		}
-		secondsText.text = "Level Complete!";
+		LevelComplete();
 		yield return null;
 	}
+
+	private void IncrementStart()
+	{
+		if (secondsIntoBreak < breakBetweenWaves)
+		{
+			secondsIntoBreak++;
+			secondsText.text = $"Seconds until battle: {breakBetweenWaves - secondsIntoBreak}";
+			waveNumberText.text = "Prepare!";
+		}
+		else
+		{
+			secondsIntoBreak = 0;
+			BeginNextWave();
+		}
+	}
+
+	private void BeginNextWave()
+	{
+		spawnsComplete = false;
+		secondsIntoWave = 0;
+		currentWave++;
+		gameState = GameState.Wave;
+	}
+	private void IncrementWave()
+	{
+		if (!spawnsComplete)
+		{
+			SpawnFromAllWavesList();
+			secondsText.text = $"Seconds: {secondsIntoWave}";
+			waveNumberText.text = $"WAVE: {currentWave +1}/{totalWaves}";
+			secondsIntoWave++;
+			if (secondsIntoWave == lengthOfEachWave[currentWave]) spawnsComplete = true;
+		}
+		else if (EnemyTracker.currentEnemies == 0)
+		{
+			if (currentWave == totalWaves -1) gameInProgress = false; //Level Complete
+			else
+			{
+				secondsIntoBreak = 0;
+				gameState = GameState.Break;
+			}
+		}	
+	}
+
+	private void IncrementBreak()
+	{
+		if (secondsIntoBreak < breakBetweenWaves)
+		{
+			secondsIntoBreak++;
+			secondsText.text = $"Seconds until next wave: {breakBetweenWaves - secondsIntoBreak}";
+			waveNumberText.text = "Repair/Fortify!";
+		}
+		else
+		{
+			BeginNextWave();
+		}
+	}
+
 	private void SpawnFromAllWavesList()
 	{
 		foreach (AllWavesList list in allWavesLists)
@@ -59,29 +122,7 @@ public class WaveManager : MonoBehaviour
 		}
 	}
 
-	private void CheckWaveStatus()
-	{
-		if (currentWave == lengthOfEachWave.Length && EnemyTracker.currentEnemies == 0) active = false;
-
-		else if (secondsIntoWave == lengthOfEachWave[currentWave]) BeginNextWave();
-		
-	}
-
 	
-
-	public void BeginNextWave()
-	{
-		if (currentWave == totalWaves) LevelComplete();
-		else
-		{
-			//play juicy sounds and graphics
-
-			currentWave++;
-			secondsIntoWave = 0;
-
-			//give players a short build period
-		}
-	}
 	public void AddEnemy()
 	{
 		enemiesSpawned++;
@@ -95,6 +136,6 @@ public class WaveManager : MonoBehaviour
 
 	private void LevelComplete()
 	{
-		Debug.Log("Level complete!");
+		secondsText.text = "Level Complete!";
 	}
 }

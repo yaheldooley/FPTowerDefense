@@ -9,47 +9,32 @@ namespace FPTowerDefense.Core
 {
 	public class Treasury : MonoBehaviour
 	{
-		[SerializeField] TextMeshProUGUI goldText;
-		[SerializeField] int startingGold = 600;
-		public int currentGold = 0;
+		[SerializeField] int startingGold = 150;
 
 		[SerializeField] Transform blueprintsRoot;
+		private UIManager uiManager;
 
 		private void Start()
 		{
-			currentGold = startingGold;
-			UpdateGoldText();
-			GiveRefToBlueprints();
+			uiManager = FindObjectOfType<UIManager>();
+			AddGold(startingGold);
 		}
 
 		public void AddGold(int amount)
 		{
-			currentGold += amount;
+			LevelSettings.currentGold += amount;
+			uiManager.UpdateGoldText();
 		}
-
 		public bool SpendGold(int amount)
 		{
-			if (currentGold <= amount)
+			if (LevelSettings.currentGold <= amount)
 			{
-				currentGold -= amount;
-				UpdateGoldText();
+				LevelSettings.currentGold -= amount;
+				print($"Removed {amount}. Current gold is now {LevelSettings.currentGold}");
+				uiManager.UpdateGoldText();
 				return true;
 			}
 			else return false;
-		}
-
-		public void UpdateGoldText()
-		{
-			goldText.text = $"Purse: {currentGold}g";
-		}
-
-		private void GiveRefToBlueprints()
-		{
-			UpgradeBlueprint[] blueprints = blueprintsRoot.GetComponentsInChildren<UpgradeBlueprint>();
-			foreach (UpgradeBlueprint blue in blueprints)
-			{
-				blue.GiveGameStatsReference(this);
-			}
 		}
 	}
 }

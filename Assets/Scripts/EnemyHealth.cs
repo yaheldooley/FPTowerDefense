@@ -21,14 +21,14 @@ public class EnemyHealth : MonoBehaviour
     {
         if (!isAlive) return;
         HP = HP - damage;
-        if (HP <= 0) Dead();
+        if (HP <= 0) Dead(true);
 	}
 
-	private void Dead()
+	public void Dead(bool _reward)
 	{
         isAlive = false;
 		EnemyTracker.currentEnemies--;
-		GameObject.FindGameObjectWithTag("GameManager").GetComponent<Treasury>().AddGold(reward);
+		if (_reward) GameObject.FindGameObjectWithTag("GameManager").GetComponent<Treasury>().AddGold(reward);
         Destroy(gameObject);
 	}
 

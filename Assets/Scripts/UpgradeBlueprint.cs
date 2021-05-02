@@ -32,13 +32,13 @@ namespace FPTowerDefense.Build
                 currentBlueprintChosen = null;
             }
         }
-
+        
         public void BuildBaseBlueprint()
         {
-            if (buildData[0].GetCost() <= LevelSettings.currentGold)
+            bool purchased = treasury.SpendGold(buildData[0].GetCost());
+            if (purchased)
             {
                 justBuilt = true;
-                treasury.SpendGold(buildData[0].GetCost()); 
                 currentBlueprintChosen.gameObject.GetComponent<Blueprint>().IsPlaced = true;
                 currentBlueprintChosen = null;
             }
@@ -60,7 +60,6 @@ namespace FPTowerDefense.Build
             if (currentBlueprintChosen != null) Destroy(currentBlueprintChosen.gameObject);
             GameObject newObject = Instantiate(buildData[0].GetPrefab(), blueprintRoot);
             currentBlueprintChosen = newObject;
-            print($"Blueprint created at {newObject.transform.position}!");
         }
 
         public void OnDeselect(BaseEventData eventData)

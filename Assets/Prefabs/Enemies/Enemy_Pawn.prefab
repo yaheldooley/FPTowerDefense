@@ -150,10 +150,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f6fad1ad3e42043a9cd7790b91187a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
-  maxHP: 5
+  HP: 4
+  maxHP: 4
   isAlive: 1
   isEnemy: 0
+  reward: 3
 --- !u!54 &-4920095729151772133
 Rigidbody:
   m_ObjectHideFlags: 0

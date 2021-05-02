@@ -53,7 +53,6 @@ public class WaveManager : MonoBehaviour
 			if (gameState == GameState.Break)	IncrementBreak();
 			yield return new WaitForSeconds(1);
 		}
-		LevelComplete();
 		yield return null;
 	}
 
@@ -91,7 +90,12 @@ public class WaveManager : MonoBehaviour
 		}
 		else if (EnemyTracker.currentEnemies == 0)
 		{
-			if (currentWave == totalWaves -1) gameInProgress = false; //Level Complete
+			if (currentWave == totalWaves - 1) //Level Complete
+			{
+				StopCoroutine(ProgressThroughWaves());
+				LevelComplete();
+			}
+			
 			else
 			{
 				secondsIntoBreak = 0;
@@ -106,7 +110,7 @@ public class WaveManager : MonoBehaviour
 		{
 			secondsIntoBreak++;
 			secondsText.text = $"Seconds until next wave: {breakBetweenWaves - secondsIntoBreak}";
-			waveNumberText.text = "Repair/Fortify!";
+			waveNumberText.text = "Fortify!";
 		}
 		else
 		{
@@ -126,16 +130,19 @@ public class WaveManager : MonoBehaviour
 	public void AddEnemy()
 	{
 		enemiesSpawned++;
-		print(enemiesSpawned + " enemies in play");
 	}
 	public void RemoveEnemy()
 	{
 		enemiesSpawned--;
-		print(enemiesSpawned + " enemies in play");
 	}
 
 	private void LevelComplete()
 	{
 		secondsText.text = "Level Complete!";
+	}
+	public void LevelFailed()
+	{
+		StopCoroutine(ProgressThroughWaves());
+		secondsText.text = "You failed to protect the child...";
 	}
 }

@@ -27,7 +27,7 @@ namespace FPTowerDefense.Core
 		}
 		public bool SpendGold(int amount)
 		{
-			if (LevelSettings.currentGold <= amount)
+			if (amount <= LevelSettings.currentGold)
 			{
 				LevelSettings.currentGold -= amount;
 				print($"Removed {amount}. Current gold is now {LevelSettings.currentGold}");
